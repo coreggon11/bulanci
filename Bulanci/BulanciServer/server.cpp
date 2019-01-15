@@ -47,19 +47,16 @@ void Server::sessionOpened()
         settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
         settings.endGroup();
     }
-
     tcpServer = new QTcpServer(this);
     if (!tcpServer->listen(QHostAddress::Any, SERVER_PORT)) {
         qDebug() << "Could not start the server.";
         return;
     }
-    QString ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
-    QString a = tr("The server is running on\n\nIP: %1\nport: %2\n\n"
-                   "Run the Fortune Client example now.")
-            .arg(ipAddress).arg(tcpServer->serverPort());
-    qDebug() << a;
+
+    qDebug() << "The server is running on port" << tcpServer->serverPort();
 }
 
+// send fortune is basically on client conencted
 void Server::sendFortune()
 {
     QByteArray block;
@@ -73,6 +70,8 @@ void Server::sendFortune()
     QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection, &QAbstractSocket::disconnected,
             clientConnection, &QObject::deleteLater);
+
+    qDebug() << clientConnection->socketDescriptor() <<" client connected";
 
     clientConnection->write(block);
     clientConnection->disconnectFromHost();
