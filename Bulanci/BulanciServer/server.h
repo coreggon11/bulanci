@@ -1,30 +1,31 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <QDialog>
+#include <QObject>
 #include <QString>
 #include <QVector>
 
-class QLabel;
+#include "player.h"
+#include "defines.h"
+
 class QTcpServer;
 class QNetworkSession;
 
-class Server : public QDialog
+class Server : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Server(QWidget *parent = nullptr);
+    explicit Server(QObject * parent = nullptr);
 
 private slots:
     void sessionOpened();
     void sendFortune();
 
 private:
-    QLabel *statusLabel = nullptr;
-    QTcpServer *tcpServer = nullptr;
-    QVector<QString> fortunes;
-    QNetworkSession *networkSession = nullptr;
+    QTcpServer * tcpServer = nullptr;
+    QNetworkSession * networkSession = nullptr;
+    QVector<Player*> * players;
 };
 
 #endif

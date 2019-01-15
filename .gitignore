@@ -11,3 +11,7 @@ build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/Makefile
 build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciServer/Makefile
 build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciServer/debug/moc_server.cpp
 build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciServer/debug/moc_predefs.h
+build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciClient/debug/moc_client.cpp
+build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciClient/debug/moc_predefs.h
+build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciClient/Makefile
+build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciServer/debug/moc_player.cpp

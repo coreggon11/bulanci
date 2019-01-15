@@ -4,9 +4,10 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    QApplication::setApplicationDisplayName(Server::tr("Fortune Server"));
+    QCoreApplication app(argc, argv);
+
     Server server;
-    server.show();
+    //server.run();
+
     return app.exec();
 }
