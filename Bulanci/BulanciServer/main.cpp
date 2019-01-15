@@ -1,10 +1,12 @@
-#include <QCoreApplication>
+#include <QApplication>
+
+#include "server.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
-
-    printf("seskteit");
-
-    return a.exec();
+    QApplication app(argc, argv);
+    QApplication::setApplicationDisplayName(Server::tr("Fortune Server"));
+    Server server;
+    server.show();
+    return app.exec();
 }
