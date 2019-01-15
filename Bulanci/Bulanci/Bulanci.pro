@@ -1,13 +1,5 @@
-QT       += core gui network
+TEMPLATE = subdirs
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
-TARGET = Bulanci
-TEMPLATE = app
-
-DEFINES += QT_DEPRECATED_WARNINGS
-
-SOURCES += \
-        main.cpp
-
-HEADERS +=
+SUBDIRS += \
+    BulanciServer \
+    BulanciClient
