@@ -4,36 +4,42 @@
 #include <QDataStream>
 #include <QDialog>
 #include <QTcpSocket>
+#include <QStringList>
+#include <QString>
 
 #include "defines.h"
+#include "player.h"
 
-class QComboBox;
-class QLabel;
-class QLineEdit;
-class QPushButton;
 class QTcpSocket;
 class QNetworkSession;
 
-class Client : public QDialog
+class Client : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Client(QWidget *parent = nullptr);
+    explicit Client(QObject *parent = nullptr);
+    ~Client();
+    QVector<Player*> * getPlayers(){return players;}
+    Player * getMyPlayer(){return myPlayer;}
 
 private slots:
-    void requestNewFortune();
-    void readFortune();
-    void displayError(QAbstractSocket::SocketError socketError);
+    void sendMessage(QString message);
+    void readyRead();
     void sessionOpened();
+    void onPress(int a);
 
 private:
-    QPushButton *getFortuneButton = nullptr;
-
     QTcpSocket *tcpSocket = nullptr;
     QDataStream in;
-
     QNetworkSession *networkSession = nullptr;
+    QVector<Player*> * players;
+    Player * myPlayer;
+
+signals:
+    void addPlayer();
+    void press(int a);
+
 };
 
 #endif // CLIENT_H

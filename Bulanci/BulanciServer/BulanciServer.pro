@@ -10,9 +10,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     server.cpp \
-    player.cpp
+    serverplayer.cpp
 
 HEADERS += \
     server.h \
-    player.h \
-    defines.h
+    defines.h \
+    serverplayer.h

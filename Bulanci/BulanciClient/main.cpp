@@ -1,11 +1,13 @@
 #include <QApplication>
 #include "client.h"
 
+#include <QGraphicsView>
+#include <QGraphicsScene>
+
+#include "renderer.h"
+
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    QApplication::setApplicationDisplayName(Client::tr("Fortune Client"));
-    Client client;
-    client.show();
-    return app.exec();
+    Renderer renderer;
+    return renderer.exec(argc,argv);
 }

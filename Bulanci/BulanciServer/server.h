@@ -1,11 +1,12 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <QTcpSocket>
 #include <QObject>
 #include <QString>
 #include <QVector>
 
-#include "player.h"
+#include "serverplayer.h"
 #include "defines.h"
 
 class QTcpServer;
@@ -17,15 +18,26 @@ class Server : public QObject
 
 public:
     explicit Server(QObject * parent = nullptr);
+    ~Server();
+    void performAction(QTcpSocket * socket, QString message);
+    void createNewPlayer(QTcpSocket * socket);
+    void send(QTcpSocket * socket, QString message);
+    void sendToAll(QString message);
+
+signals:
+    void createPlayers();
 
 private slots:
     void sessionOpened();
-    void sendFortune();
+    void clientConnected();
+    void readyRead();
+    void onCreatePlayers();
 
 private:
     QTcpServer * tcpServer = nullptr;
     QNetworkSession * networkSession = nullptr;
-    QVector<Player*> * players;
+    QVector<ServerPlayer*> * players;
+    QVector<QTcpSocket*> * sockets;
 };
 
 #endif
