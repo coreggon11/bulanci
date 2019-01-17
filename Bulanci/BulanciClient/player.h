@@ -27,6 +27,9 @@ private:
     int socket;
     Client * client;
     Direction facing;
+
+    int rightArrowPressCount = 0;
+    int upArrowKeyPressCount = 0;
 };
 
 #endif // PLAYER_H
