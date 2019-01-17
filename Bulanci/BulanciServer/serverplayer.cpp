@@ -1,7 +1,7 @@
 #include "serverplayer.h"
 
-ServerPlayer::ServerPlayer(int x, int y, int socket):
-    x(x), y(y), socket(socket)
+ServerPlayer::ServerPlayer(int x, int y, QTcpSocket * socket):
+    x(x), y(y), socket(socket), socketDescriptor(socket->socketDescriptor())
 {
 
 }

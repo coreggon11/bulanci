@@ -6,15 +6,6 @@ Renderer::Renderer(QObject * parent):
 {
 }
 
-Renderer::~Renderer()
-{
-    delete scene;
-    delete view;
-    delete app;
-    delete client;
-    delete addedPlayers;
-}
-
 int Renderer::exec(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -25,6 +16,7 @@ int Renderer::exec(int argc, char *argv[])
     scene->setSceneRect(0,0,1280,720);
     client = new Client();
     connect(client, SIGNAL(addPlayer()), this, SLOT(onAddPlayer()));
+    connect(client, SIGNAL(deletePlayer(Player*)), this, SLOT(deletePlayer(Player*)));
     view->setScene(scene);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -49,4 +41,12 @@ void Renderer::onAddPlayer()
             player->setFocus();
         }
     }
+}
+
+void Renderer::deletePlayer(Player *player)
+{
+    addedPlayers->removeAll(player);
+    scene->removeItem(player);
+    //delete player;
+    //player = nullptr;
 }

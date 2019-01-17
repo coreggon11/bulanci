@@ -32,6 +32,7 @@ private slots:
     void clientConnected();
     void readyRead();
     void onCreatePlayers();
+    void clientDisconnected();
 
 private:
     QTcpServer * tcpServer = nullptr;

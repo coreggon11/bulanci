@@ -14,6 +14,7 @@ Client::Client(QObject *parent)
     in.setVersion(QDataStream::Qt_4_0);
 
     connect(tcpSocket, &QIODevice::readyRead, this, &Client::readyRead, Qt::DirectConnection);
+    connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()), Qt::DirectConnection);
 
     QNetworkConfigurationManager manager;
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
@@ -109,6 +110,32 @@ void Client::readyRead()
                 player->shoot();
             }
         }
+    }else if(strings[0] == "let"){
+        int i;
+        int socket;
+        bool deletion = true;
+        QVector<Player*> playersToDelete;
+        for(auto * player : *players)
+        {
+            deletion = true;
+            i = 1;
+            while(i < strings.size())
+            {
+                socket = QString(strings[i]).toInt();
+                if(player->getSocket() == socket)
+                    deletion = false;
+                ++i;
+            }
+            if(deletion)
+            {
+                playersToDelete.push_back(player);
+            }
+        }
+        for(auto * player : playersToDelete)
+        {
+            players->removeAll(player);
+            emit deletePlayer(player);
+        }
     }
 
 }
@@ -148,5 +175,12 @@ void Client::onPress(int a)
     case Qt::Key_Space:
         sendMessage("S");
         break;
+    default:
+        return;
     }
+}
+
+void Client::onDisconnected()
+{
+    sendMessage("disconnceted");
 }

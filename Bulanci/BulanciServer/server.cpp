@@ -54,9 +54,9 @@ void Server::performAction(QTcpSocket *socket, QString message)
     if(message == "L" || message == "R" || message == "U" || message == "D")
     {
         QString newMessage = "move#" + message +
-            "#" + QString::number(socket->socketDescriptor());
+                "#" + QString::number(socket->socketDescriptor());
         for(auto * player : *players){
-            if(player->getSocket() == socket->socketDescriptor()){
+            if(player->getSocketDescriptor() == socket->socketDescriptor()){
                 player->move(message);
             }
         }
@@ -79,14 +79,14 @@ void Server::createNewPlayer(QTcpSocket *socket)
         message += "#";
         message += QString::number(player->getY());
         message += "#";
-        message += QString::number(player->getSocket());
+        message += QString::number(player->getSocketDescriptor());
         message += "#";
     }
 
     message +="other#"+QString::number(x)+"#"+QString::number(y)+
             "#" + QString::number(socket->socketDescriptor());
     send(socket, message);
-    ServerPlayer * player = new ServerPlayer(x,y,socket->socketDescriptor());
+    ServerPlayer * player = new ServerPlayer(x,y,socket);
     players->append(player);
 
     emit createPlayers();
@@ -141,6 +141,7 @@ void Server::clientConnected()
     QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection, &QAbstractSocket::disconnected,
             clientConnection, &QObject::deleteLater);
+    connect(clientConnection, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
 
     qDebug() << clientConnection->socketDescriptor() <<" client connected";
 
@@ -170,9 +171,45 @@ void Server::onCreatePlayers()
         message += "#";
         message += QString::number(player->getY());
         message += "#";
-        message += QString::number(player->getSocket());
+        message += QString::number(player->getSocketDescriptor());
         message += "#";
     }
     qDebug() << message;
     sendToAll(message);
+}
+
+void Server::clientDisconnected()
+{
+    qDebug() << "client disconnected";
+    QVector<QTcpSocket*> * tmp_sockets = new QVector<QTcpSocket*>();
+    for(QTcpSocket * socket: *sockets){
+        if(socket->state() == QTcpSocket::UnconnectedState)
+        {
+            tmp_sockets->push_back(socket);
+        }
+    }
+    for(QTcpSocket * socket : *tmp_sockets)
+    {
+        sockets->removeAll(socket);
+    }
+    for(QTcpSocket * socket : *tmp_sockets)
+    {
+        for(ServerPlayer * player : *players){
+            if(player->getSocket() == socket)
+            {
+                players->removeAll(player);
+                delete player;
+                player = nullptr;
+            }
+        }
+    }
+    tmp_sockets->clear();
+    delete tmp_sockets;
+    tmp_sockets = nullptr;
+    QString message = "let";
+    for(ServerPlayer * player : *players){
+        message += "#" + QString::number(player->getSocketDescriptor());
+    }
+    if(players->size() > 0)
+        sendToAll(message);
 }

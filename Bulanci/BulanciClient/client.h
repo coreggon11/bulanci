@@ -6,6 +6,7 @@
 #include <QTcpSocket>
 #include <QStringList>
 #include <QString>
+#include <QVector>
 
 #include "defines.h"
 #include "player.h"
@@ -28,6 +29,7 @@ private slots:
     void readyRead();
     void sessionOpened();
     void onPress(int a);
+    void onDisconnected();
 
 private:
     QTcpSocket *tcpSocket = nullptr;
@@ -39,6 +41,7 @@ private:
 signals:
     void addPlayer();
     void press(int a);
+    void deletePlayer(Player * player);
 
 };
 

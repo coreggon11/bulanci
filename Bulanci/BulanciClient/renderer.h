@@ -14,10 +14,10 @@ class Renderer : public QObject
     Q_OBJECT
 public:
     Renderer(QObject * parent = nullptr);
-    ~Renderer();
     int exec(int argc, char *argv[]);
 public slots:
     void onAddPlayer();
+    void deletePlayer(Player * player);
 private:
     QApplication * app;
     QGraphicsView * view;

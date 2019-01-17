@@ -2,22 +2,25 @@
 #define PLAYER_H
 
 #include <QObject>
+#include <QTcpSocket>
 
 class ServerPlayer : public QObject
 {
     Q_OBJECT
 public:
-    ServerPlayer(int x, int y, int socket);
+    ServerPlayer(int x, int y, QTcpSocket * socket);
     int getX(){return x;}
     int getY(){return y;}
-    int getSocket(){return socket;}
+    QTcpSocket * getSocket(){return socket;}
+    int getSocketDescriptor(){return socketDescriptor;}
     void move(QString way);
     void setPos(int x, int y);
 
 private:
     int x;
     int y;
-    int socket;
+    int socketDescriptor;
+    QTcpSocket * socket;
 
 };
 
