@@ -1,9 +1,9 @@
 #include "serverplayer.h"
 
 ServerPlayer::ServerPlayer(int x, int y, QTcpSocket * socket):
-    x(x), y(y), socket(socket), socketDescriptor(socket->socketDescriptor())
+    x(x), y(y), socket(socket)
 {
-
+    socketDescriptor = socket == nullptr? -1 : socket->socketDescriptor();
 }
 
 void ServerPlayer::move(QString way)
