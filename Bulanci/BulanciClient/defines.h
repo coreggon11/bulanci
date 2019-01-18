@@ -8,6 +8,6 @@
 #define MIN_Y -125
 #define MAX_X 1155
 #define MAX_Y 595
-#define MAX_POINTS 20
+#define MAX_POINTS 5
 
 #endif // DEFINES_H

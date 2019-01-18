@@ -84,11 +84,13 @@ void Client::readyRead()
                     }
                     Player * newPlayer = new Player(x,y,socket);
                     players->append(newPlayer);
+                    connect(newPlayer, SIGNAL(win(Player*)), this, SLOT(onWin(Player*)));
                     if(now >= strings.size())
                         myPlayer = newPlayer;
                 }
             else{
                 Player * player = new Player(x,y,socket);
+                connect(player, SIGNAL(win(Player*)), this, SLOT(onWin(Player*)));
                 players->append(player);
                 if(now >= strings.size())
                     myPlayer = player;
@@ -183,4 +185,19 @@ void Client::onPress(int a)
 void Client::onDisconnected()
 {
     sendMessage("disconnceted");
+}
+
+void Client::onBulletCollision(QGraphicsItem *item)
+{
+    Player * player;
+    if(player = dynamic_cast<Player*>(item))
+    {
+        player->die();
+    }
+}
+
+void Client::onWin(Player *player)
+{
+    sendMessage("win#" + QString::number(player->getSocket()));
+    emit end();
 }

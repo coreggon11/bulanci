@@ -17,6 +17,7 @@ int Renderer::exec(int argc, char *argv[])
     client = new Client();
     connect(client, SIGNAL(addPlayer()), this, SLOT(onAddPlayer()));
     connect(client, SIGNAL(deletePlayer(Player*)), this, SLOT(deletePlayer(Player*)));
+    connect(client, SIGNAL(end()), this, SLOT(onEnd()));
     view->setScene(scene);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -33,6 +34,7 @@ void Renderer::onAddPlayer()
         if(addedPlayers->contains(player)){
             continue;
         }
+        connect(player,SIGNAL(bulletCollision(QGraphicsItem*)),client ,SLOT(onBulletCollision(QGraphicsItem*)));
         addedPlayers->append(player);
         scene->addItem(player);
         if(player == client->getMyPlayer()){
@@ -46,7 +48,15 @@ void Renderer::onAddPlayer()
 void Renderer::deletePlayer(Player *player)
 {
     addedPlayers->removeAll(player);
-    scene->removeItem(player);
+    if(scene->items().contains(player))
+        scene->removeItem(player);
     //delete player;
     //player = nullptr;
+}
+
+void Renderer::onEnd()
+{
+    /*for(auto * item : scene->items())
+        scene->removeItem(item);*/
+    qDebug() << "end";
 }

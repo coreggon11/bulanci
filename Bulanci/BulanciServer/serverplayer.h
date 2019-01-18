@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QTcpSocket>
 
+#include "defines.h"
+
 class ServerPlayer : public QObject
 {
     Q_OBJECT

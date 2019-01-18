@@ -18,6 +18,8 @@ public:
 public slots:
     void onAddPlayer();
     void deletePlayer(Player * player);
+    void onEnd();
+
 private:
     QApplication * app;
     QGraphicsView * view;

@@ -1,9 +1,10 @@
 #include "bullet.h"
-#include "client.h"
+#include "player.h"
 
-Bullet::Bullet(int x, int y, Direction facing):
+Bullet::Bullet(int x, int y, Direction facing, Player * player):
     QGraphicsRectItem(),
-    facing(facing)
+    facing(facing),
+    player(player)
 {
     setRect(x,y,BULLET_WIDTH, BULLET_WIDTH);
     setPos(x,y);
@@ -38,5 +39,17 @@ void Bullet::move()
         delete this;
         return;
     }
+    for(auto * item : scene()->items())
+        if(x() >= item->x() && x() <= item->x() + PLAYER_WIDTH
+                && y() >= item->y() && y() <= item->y() + PLAYER_WIDTH
+                && item != this && item != player && !(dynamic_cast<Bullet*>(item)))
+        {
+            player->addPoint();
+            emit player->bulletCollision(item);
+            scene()->removeItem(this);
+            delete this;
+            return;
+        }
+    //qDebug() << "an item";
 }
 

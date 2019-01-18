@@ -48,9 +48,6 @@ Server::~Server()
 
 void Server::performAction(QTcpSocket *socket, QString message)
 {
-    qDebug() << players->size();
-    if(message != "")
-        qDebug() << socket->socketDescriptor() << message;
     if(message == "L" || message == "R" || message == "U" || message == "D")
     {
         QString newMessage = "move#" + message +
@@ -64,6 +61,18 @@ void Server::performAction(QTcpSocket *socket, QString message)
     } else if (message == "S"){
         QString newMessage = "shoot#" + QString::number(socket->socketDescriptor());
         sendToAll(newMessage);
+    } else {
+        if(message == "w")
+        {
+            QString rest = socket->readAll().data();
+            QStringList messages = rest.split("#");
+            QString winner = messages[1];
+            for(int i = 1; i < players->size() + 1; i++)
+            {
+                if((*players)[i-1]->getSocketDescriptor() == winner.toInt())
+                    qDebug() << "Player " << QString::number(i) << " won!";
+            }
+        }
     }
 }
 

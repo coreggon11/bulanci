@@ -19,3 +19,5 @@ build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciClient/debug/moc_bulle
 build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciClient/debug/moc_renderer.cpp
 build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciServer/debug/moc_serverplayer.cpp
 *.user
+build-Bulanci-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/BulanciClient/debug/moc_player.cpp
+Bulanci/Bulanci.pro.user

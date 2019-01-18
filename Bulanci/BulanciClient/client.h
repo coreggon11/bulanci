@@ -30,6 +30,8 @@ private slots:
     void sessionOpened();
     void onPress(int a);
     void onDisconnected();
+    void onBulletCollision(QGraphicsItem * item);
+    void onWin(Player * player);
 
 private:
     QTcpSocket *tcpSocket = nullptr;
@@ -42,6 +44,7 @@ signals:
     void addPlayer();
     void press(int a);
     void deletePlayer(Player * player);
+    void end();
 
 };
 
