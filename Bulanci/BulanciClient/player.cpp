@@ -43,21 +43,31 @@ void Player::move(QString way)
         this->upArrowKeyPressCount--;
     }
 
+    if(x() < MIN_X)
+        setPos(MIN_X, y());
+    if(x() + PLAYER_WIDTH > MAX_X)
+        setPos(MAX_X - PLAYER_WIDTH, y());
+    if(y() < MIN_Y)
+        setPos(x(), MIN_Y);
+    if(y() + PLAYER_WIDTH > MAX_Y)
+        setPos(x(), MAX_Y - PLAYER_WIDTH);
+
     qDebug() << "New Player position X: " << this->x() << " and Y: " << this->y() << endl;
 }
 
 void Player::shoot()
 {
-    qreal playerX = this->x();
+    /*qreal playerX = this->x();
     qreal playerY = this->y();
 
     qDebug() << "Player on position X: " << playerX << " and Y: " << playerY << endl;
 
-    int bulletX = playerX - (this->rightArrowPressCount * 5);
-    int bulletY = playerY + (this->upArrowKeyPressCount * 5);
+    int bulletX = playerX;// - (this->rightArrowPressCount * 5);
+    int bulletY = playerY;*/
 
-    Bullet * bullet = new Bullet(bulletX, bulletY, facing);
+    Bullet * bullet = new Bullet(x(), y(), facing);
+    bullet->setRect(x(), y(),15,15);
     scene()->addItem(bullet);
 
-    qDebug() << "Bullet X: " << bulletX << " and Y:" << bulletY << endl;
+    //qDebug() << "Bullet X: " << bulletX << " and Y:" << bulletY << endl;
 }
