@@ -19,15 +19,19 @@ class Player : public QObject, public QGraphicsRectItem
     Q_OBJECT
 public:
     Player(int x, int y, int socket);
+    Player(int x, int y, int socket, int order);
     int getSocket(){return socket;}
     void keyPressEvent(QKeyEvent * event);
     void setClient(Client * client);
     Client * getClient(){return client;}
+    QGraphicsScene * getScene(){return thisScene;}
+    QTimer * getTimer() {return timer;}
     void move(QString way);
     void shoot();
     void die();
     void addPoint();
     void removePoint();
+    void init();
 
 signals:
     void bulletCollision(QGraphicsItem * item);
@@ -44,9 +48,7 @@ private:
     QTimer * timer;
     bool dead;
     QGraphicsScene * thisScene;
-
-    int rightArrowPressCount = 0;
-    int upArrowKeyPressCount = 0;
+    QGraphicsTextItem * score;
 };
 
 #endif // PLAYER_H

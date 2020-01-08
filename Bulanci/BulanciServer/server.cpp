@@ -2,6 +2,7 @@
 #include <QtNetwork>
 #include <QtCore>
 #include <QDebug>
+#include <QApplication>
 
 #include "server.h"
 
@@ -36,14 +37,7 @@ Server::Server(QObject *parent):
 
 Server::~Server()
 {
-    delete tcpServer;
-    delete networkSession;
-    for(auto * player : * players)
-        delete player;
-    delete players;
-    for(auto * socket : * sockets)
-        delete socket;
-    delete sockets;
+    exit();
 }
 
 void Server::performAction(QTcpSocket *socket, QString message)
@@ -69,8 +63,10 @@ void Server::performAction(QTcpSocket *socket, QString message)
             QString winner = messages[1];
             for(int i = 1; i < players->size() + 1; i++)
             {
-                if((*players)[i-1]->getSocketDescriptor() == winner.toInt())
-                    qDebug() << "Player " << QString::number(i) << " won!";
+                if((*players)[i-1]->getSocketDescriptor() == winner.toInt()){
+                    QString newMessage = "win#Player " + QString::number(i) + " won!";
+                    sendToAll(newMessage);
+                }
             }
         }
     }
@@ -118,6 +114,26 @@ void Server::sendToAll(QString message)
     for(auto * socket : *sockets){
         send(socket, message);
     }
+}
+
+void Server::exit()
+{
+    networkSession->close();
+    qDebug() << "blabla";
+    QString message = "let";
+    for(ServerPlayer * player : *players){
+        message += "#" + QString::number(player->getSocketDescriptor());
+    }
+    if(players->size() > 0)
+        sendToAll(message);
+    delete tcpServer;
+    delete networkSession;
+    for(auto * player : * players)
+        delete player;
+    delete players;
+    for(auto * socket : * sockets)
+        delete socket;
+    delete sockets;
 }
 
 void Server::sessionOpened()

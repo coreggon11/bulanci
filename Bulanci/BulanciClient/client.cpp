@@ -76,20 +76,18 @@ void Client::readyRead()
             int x = QString(strings[now++]).toInt();
             int y = QString(strings[now++]).toInt();
             int socket = QString(strings[now++]).toInt();
-            if(players->size() > 0)
+            bool add = true;
+            if(players->size() > 0){
                 for(int i = 0; i < players->size(); ++i) {
                     Player * player = (*players)[i];
                     if(player->getSocket() == socket){
-                        continue;
+                        add = false;
+                        break;
                     }
-                    Player * newPlayer = new Player(x,y,socket);
-                    players->append(newPlayer);
-                    connect(newPlayer, SIGNAL(win(Player*)), this, SLOT(onWin(Player*)));
-                    if(now >= strings.size())
-                        myPlayer = newPlayer;
                 }
-            else{
-                Player * player = new Player(x,y,socket);
+            }
+            if(add){
+                Player * player = new Player(x,y,socket,players->size());
                 connect(player, SIGNAL(win(Player*)), this, SLOT(onWin(Player*)));
                 players->append(player);
                 if(now >= strings.size())
@@ -137,6 +135,25 @@ void Client::readyRead()
         {
             players->removeAll(player);
             emit deletePlayer(player);
+        }
+    } else if(strings[0] == "win"){
+        QVector<Player*> itemsToRemove;
+        for(auto * item : myPlayer->getScene()->items()){
+            Player * player;
+            if((player = dynamic_cast<Player*>(item))){
+                itemsToRemove.push_back(player);
+            }
+        }
+        QGraphicsTextItem * win = new QGraphicsTextItem();
+        win->setPos(600,340);
+        win->setPlainText(strings[1]);
+        myPlayer->getScene()->addItem(win);
+        for(Player * player : *players){
+            player->getTimer()->stop();
+        }
+        for(auto * item : itemsToRemove){
+            myPlayer->getScene()->removeItem(item);
+            emit deletePlayer(item);
         }
     }
 

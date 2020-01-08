@@ -9,10 +9,42 @@ Player::Player(int x, int y, int socket):
     facing(Direction::RIGHT),
     points(0),
     timer(new QTimer()),
-    dead(false)
+    dead(false),
+    client(nullptr)
 {
-    setRect(x,y,PLAYER_WIDTH,PLAYER_WIDTH);
+    setRect(0,0,PLAYER_WIDTH,PLAYER_WIDTH);
     setPos(x,y);
+    setBrush(Qt::red);
+
+    score = new QGraphicsTextItem;
+    score->setPos(20,720 - ((y / 125)) * 20);
+    score->setPlainText("Score : 0");
+}
+
+Player::Player(int x, int y, int socket, int order):
+    Player(x,y,socket)
+{
+    QBrush brush;
+    switch(order){
+    case 0:
+        brush = Qt::red;
+        break;
+    case 1:
+        brush = Qt::green;
+        break;
+    case 2:
+        brush = Qt::blue;
+        break;
+    case 3:
+        brush = Qt::yellow;
+        break;
+    case 4:
+    default:
+        brush = Qt::cyan;
+        break;
+    }
+    setBrush(brush);
+    score->setDefaultTextColor(brush.color());
 }
 
 void Player::keyPressEvent(QKeyEvent *event)
@@ -28,45 +60,48 @@ void Player::setClient(Client *client)
 
 void Player::move(QString way)
 {
+    int originalX = x();
+    int originalY = y();
+
     if(way == "L"){
         facing = Direction::LEFT;
         setPos(x() - 10, y());
-        this->rightArrowPressCount--;
     }else if(way == "R"){
         facing = Direction::RIGHT;
         setPos(x() + 10, y());
-        this->rightArrowPressCount++;
     }else if(way == "U"){
         facing = Direction::UP;
         setPos(x(), y() - 10);
-        this->upArrowKeyPressCount++;
     }else if(way == "D"){
         facing = Direction::DOWN;
         setPos(x(), y() + 10);
-        this->upArrowKeyPressCount--;
     }
 
-    if(x() < MIN_X)
+    if(x() <= MIN_X)
         setPos(MIN_X, y());
-    if(x() + PLAYER_WIDTH > MAX_X)
+    if(x() + PLAYER_WIDTH >= MAX_X)
         setPos(MAX_X - PLAYER_WIDTH, y());
-    if(y() < MIN_Y)
+    if(y() <= MIN_Y)
         setPos(x(), MIN_Y);
-    if(y() + PLAYER_WIDTH > MAX_Y)
+    if(y() + PLAYER_WIDTH >= MAX_Y)
         setPos(x(), MAX_Y - PLAYER_WIDTH);
+
+    for(auto * item : scene()->items())
+        if(dynamic_cast<QGraphicsItem*>(item) &&
+            dynamic_cast<QGraphicsItem*>(item) != this &&
+            !(dynamic_cast<Bullet*>(item)) &&
+            this->collidesWithItem(item))
+        {
+            setPos(originalX, originalY);
+        }
 
     qDebug() << "New Player position X: " << this->x() << " and Y: " << this->y() << endl;
 }
 
 void Player::shoot()
 {
-    qreal playerX = this->x();
-    qreal playerY = this->y();
-
-    qDebug() << "Player on position X: " << playerX << " and Y: " << playerY << endl;
-
-    int bulletX = playerX - (this->rightArrowPressCount * 5);
-    int bulletY = playerY + (this->upArrowKeyPressCount * 5);
+    int bulletX = this->x();
+    int bulletY = this->y();
 
     Bullet * bullet = new Bullet(bulletX, bulletY, facing, this);
     scene()->addItem(bullet);
@@ -87,7 +122,7 @@ void Player::die()
 void Player::addPoint()
 {
     ++points;
-    qDebug() << MAX_POINTS;
+    score->setPlainText("Score : " + QString::number(points));
     if(points >= MAX_POINTS)
         emit win(this);
 }
@@ -95,6 +130,13 @@ void Player::addPoint()
 void Player::removePoint()
 {
     --points;
+    score->setPlainText("Score : " + QString::number(points));
+}
+
+void Player::init()
+{
+    scene()->addItem(score);
+    thisScene = scene();
 }
 
 void Player::respawn()

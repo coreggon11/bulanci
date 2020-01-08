@@ -13,7 +13,10 @@ int Renderer::exec(int argc, char *argv[])
 
     view = new QGraphicsView();
     scene = new QGraphicsScene();
-    scene->setSceneRect(0,0,1280,720);
+
+    view->setFixedSize(MAX_X,MAX_Y);
+    scene->setSceneRect(0,0,MAX_X,MAX_Y);
+
     client = new Client();
     connect(client, SIGNAL(addPlayer()), this, SLOT(onAddPlayer()));
     connect(client, SIGNAL(deletePlayer(Player*)), this, SLOT(deletePlayer(Player*)));
@@ -37,6 +40,7 @@ void Renderer::onAddPlayer()
         connect(player,SIGNAL(bulletCollision(QGraphicsItem*)),client ,SLOT(onBulletCollision(QGraphicsItem*)));
         addedPlayers->append(player);
         scene->addItem(player);
+        player->init();
         if(player == client->getMyPlayer()){
             player->setClient(client);
             player->setFlag(QGraphicsItem::ItemIsFocusable);

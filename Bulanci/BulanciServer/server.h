@@ -23,6 +23,7 @@ public:
     void createNewPlayer(QTcpSocket * socket);
     void send(QTcpSocket * socket, QString message);
     void sendToAll(QString message);
+    void exit();
 
 signals:
     void createPlayers();

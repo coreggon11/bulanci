@@ -23,13 +23,13 @@ void ServerPlayer::setPos(int x, int y){
 
     this->x = x;
     this->y = y;
-    if(x < MIN_X)
-        x= MIN_X;
-    if(x > MAX_X - PLAYER_WIDTH)
-        x= MAX_X - PLAYER_WIDTH;
-    if(y < MIN_Y)
-        y= MIN_Y;
-    if(y > MAX_Y - PLAYER_WIDTH)
-        x= MAX_Y - PLAYER_WIDTH;
+    if(this->x <= MIN_X)
+        this->x= MIN_X;
+    if(this->x >= MAX_X - PLAYER_WIDTH)
+        this->x= MAX_X - PLAYER_WIDTH;
+    if(this->y <= MIN_Y)
+        this->y= MIN_Y;
+    if(this->y >= MAX_Y - PLAYER_WIDTH)
+        this->x= MAX_Y - PLAYER_WIDTH;
 
 }
